@@ -1,5 +1,5 @@
 转载https://github.com/zack24q/vue-navigation
-# navigation 修改 tabbar 一直保挂缓存问题
+# navigation 修改 tabbar 保持缓存问题
 vue app 缓存前进刷新后退不刷新
 
 
