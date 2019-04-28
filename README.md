@@ -35,7 +35,7 @@ router.js
   
   
 
-    transition :enter-active-class="enterTransition"
+        <transition :enter-active-class="enterTransition"
                     :leave-active-class="leaveTransition">
           <navigation>
             <router-view class="child-view"/>
