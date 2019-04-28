@@ -44,10 +44,6 @@ router.js
         
     export default {
         name: 'app',
-        components: {
-          NavBar,
-          loading, blankPage, CustomerService,DownloadtheAD
-        },
         data() {
           return {
             enterTransition: 'animated fadeIn',
