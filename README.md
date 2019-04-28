@@ -31,7 +31,7 @@ router.js
       
 
   https://daneden.github.io/animate.css/
-  结合Transition、Animate  Route过渡动画:
+  结合Transition、Animate：  Router过渡动画:
   
   
 
