@@ -1,4 +1,6 @@
-export function genKey() {
+import util from 'util'
+
+export function genKey () {
   // const t  = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
   const t = 'xxxxxxxx'
   return t.replace(/[xy]/g, function (c) {
@@ -8,26 +10,25 @@ export function genKey() {
   })
 }
 
-export function getKey(route, keyName) {
+export function getKey (route, keyName) {
   return `${route.name || route.path}?${route.query[keyName]}`
 }
 
-export function matches(pattern, name) {
+export function matches (pattern, name) {
   if (Array.isArray(pattern)) {
     return pattern.indexOf(name) > -1
   } else if (typeof pattern === 'string') {
     return pattern.split(',').indexOf(name) > -1
-  } else if (isRegExp(pattern)) {
+  } else if (util.types.isRegExp(pattern)) {
     return pattern.test(name)
   }
   return false
 }
 
-export function isObjEqual(obj1, obj2) {
+export function isObjEqual (obj1, obj2) {
   if (obj1 === obj2) {
     return true
-  }
-  else {
+  } else {
     const keys1 = Object.getOwnPropertyNames(obj1)
     const keys2 = Object.getOwnPropertyNames(obj2)
     if (keys1.length !== keys2.length) {

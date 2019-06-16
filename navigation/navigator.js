@@ -15,12 +15,16 @@ export default (bus, store, moduleName, keyName) => {
           state.routes.splice(state.routes.length - count, count)
         },
         'navigation/REPLACE': (state, { to, from, name }) => {
-          state.routes.splice(Routes.length - 1, 1, name)
+          state.routes.splice(state.routes.length - 1, 1, name)
         },
         'navigation/REFRESH': (state, { to, from }) => {
         },
         'navigation/RESET': (state) => {
           state.routes.splice(0, state.routes.length)
+        },
+        'navigation/MOVE': (state, { to, from, name }) => {
+          state.routes.splice(state.routes.lastIndexOf(name), 1)
+          state.routes.push(name)
         }
       }
     })
@@ -33,11 +37,7 @@ export default (bus, store, moduleName, keyName) => {
     // if from does not exist, it will be set null
     from.name = routes[routes.length - 1] || null
     to.name = name
-    if (store) {
-      store.commit('navigation/FORWARD', { to, from, name })
-    } else {
-      routes.push(name)
-    }
+    store ? store.commit('navigation/FORWARD', { to, from, name }) : routes.push(name)
     window.sessionStorage.VUE_NAVIGATION = JSON.stringify(routes)
     bus.$emit('forward', to, from)
   }
@@ -58,7 +58,6 @@ export default (bus, store, moduleName, keyName) => {
     // if from does not exist, it will be set null
     from.name = routes[routes.length - 1] || null
     to.name = name
-    removeRoute(name)
     store ? store.commit('navigation/REPLACE', { to, from, name }) : routes.splice(Routes.length - 1, 1, name)
     window.sessionStorage.VUE_NAVIGATION = JSON.stringify(routes)
     bus.$emit('replace', to, from)
@@ -68,8 +67,19 @@ export default (bus, store, moduleName, keyName) => {
     const from = { route: fromRoute }
     const routes = store ? store.state[moduleName].routes : Routes
     to.name = from.name = routes[routes.length - 1]
-    store ? store.commit('navigation/REFRESH', { to, from }) : null
+    if (store) { store.commit('navigation/REFRESH', { to, from }) }
     bus.$emit('refresh', to, from)
+  }
+  const move = (name, toRoute, fromRoute) => {
+    const to = { route: toRoute }
+    const from = { route: fromRoute }
+    const routes = store ? store.state[moduleName].routes : Routes
+    if (store) {
+      store.commit('navigation/MOVE', { to, from, name })
+    } else {
+      routes.splice(Routes.lastIndexOf(name), 1)
+      routes.push(name)
+    }
   }
   const reset = () => {
     store ? store.commit('navigation/RESET') : Routes.splice(0, Routes.length)
@@ -82,29 +92,20 @@ export default (bus, store, moduleName, keyName) => {
     if (replaceFlag) {
       replace(name, toRoute, fromRoute)
     } else {
-      if (fromRoute.meta.hasOwnProperty('isKeepAlive') && fromRoute.meta.isKeepAlive && toRoute.meta.hasOwnProperty('isKeepAlive') && toRoute.meta.isKeepAlive) {
-        removeRoute(name)
-      }
-      let toIndex = Routes.lastIndexOf(name)
+      const toIndex = Routes.lastIndexOf(name)
       if (toIndex === -1) {
         forward(name, toRoute, fromRoute)
       } else if (toIndex === Routes.length - 1) {
         refresh(toRoute, fromRoute)
       } else {
-        back(Routes.length - 1 - toIndex, toRoute, fromRoute)
+        if (toRoute.meta && toRoute.meta.isKeepAlive && fromRoute.meta && fromRoute.meta.isKeepAlive) {
+          move(name, toRoute, fromRoute)
+        } else {
+          back(Routes.length - 1 - toIndex, toRoute, fromRoute)
+        }
       }
     }
-     console.log(Routes)
-  }
-
-  const removeRoute = (name) => {
-    for (let key in Routes) {
-      let item = Routes[key]
-      if (item === name) {
-        Routes.splice(key, 1)
-        break
-      }
-    }
+    console.log(Routes)
   }
 
   return {

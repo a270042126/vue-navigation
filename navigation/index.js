@@ -32,7 +32,7 @@ export default {
         ) && from.query[keyName]) {
           query[keyName] = from.query[keyName]
         } else {
-          if (to.meta.hasOwnProperty('isKeepAlive') && to.meta.isKeepAlive) {
+          if (to.meta && to.meta.isKeepAlive) {
             query[keyName] = 'keep'
           } else {
             query[keyName] = genKey()
