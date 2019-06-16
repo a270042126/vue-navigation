@@ -1,5 +1,5 @@
 转载https://github.com/zack24q/vue-navigation
-# navigation 修改 tabbar 一直保挂缓存问题
+# 修改 navigation  tabbar 保持缓存问题
 vue app 缓存前进刷新后退不刷新
 
 
@@ -31,11 +31,11 @@ router.js
       
 
   https://daneden.github.io/animate.css/
-  结合Transition、Animate  Route过渡动画:
+  结合Transition、Animate：  Router过渡动画:
   
   
 
-    transition :enter-active-class="enterTransition"
+        <transition :enter-active-class="enterTransition"
                     :leave-active-class="leaveTransition">
           <navigation>
             <router-view class="child-view"/>
@@ -44,10 +44,6 @@ router.js
         
     export default {
         name: 'app',
-        components: {
-          NavBar,
-          loading, blankPage, CustomerService,DownloadtheAD
-        },
         data() {
           return {
             enterTransition: 'animated fadeIn',
